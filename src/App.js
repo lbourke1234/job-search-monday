@@ -11,6 +11,15 @@ import SelectCategory from './components/SelectCategory'
 const App = () => {
   const [searchText, setSearchText] = useState('')
   const [jobs, setJobs] = useState([])
+  const [selectValue, setSelectValue] = useState(' ')
+
+  const searchFunc = (titleSearchResults, companySearchResults) => {
+    if (titleSearchResults) {
+      return titleSearchResults
+    } else {
+      return companySearchResults
+    }
+  }
 
   const fetchSearchApi = async (searchText) => {
     const response = await fetch(
@@ -18,7 +27,25 @@ const App = () => {
     )
     if (response.ok) {
       const body = await response.json()
-      console.log(body.data)
+
+      const titleSearchResults = body.data.filter((job) =>
+        job.title.toLowerCase().includes(searchText.toLowerCase())
+      )
+      const companySearchResults = body.data.filter((job) =>
+        job.company_name.toLowerCase().includes(searchText.toLowerCase())
+      )
+
+      setJobs(searchFunc(titleSearchResults, companySearchResults))
+    }
+  }
+
+  const fetchCategory = async (selectValue) => {
+    const response = await fetch(
+      `https://strive-jobs-api.herokuapp.com/jobs?category=${selectValue}&limit=10`
+    )
+
+    if (response.ok) {
+      const body = await response.json()
       setJobs(body.data)
     }
   }
@@ -26,6 +53,15 @@ const App = () => {
   useEffect(() => {
     fetchSearchApi(searchText)
   }, [searchText])
+
+  useEffect(
+    (selectValue) => {
+      if (selectValue !== ' ') {
+        fetchCategory(selectValue)
+      }
+    },
+    [selectValue]
+  )
 
   return (
     <BrowserRouter>
@@ -35,7 +71,7 @@ const App = () => {
             <h1 className="text-center">Job Search</h1>
           </Col>
           <SearchBar setSearchText={setSearchText} />
-          <SelectCategory />
+          <SelectCategory setSelectValue={setSelectValue} fetchCategory={fetchCategory} />
         </Row>
         <Row></Row>
         <hr />
