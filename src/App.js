@@ -28,14 +28,17 @@ const App = () => {
     if (response.ok) {
       const body = await response.json()
 
-      const titleSearchResults = body.data.filter((job) =>
-        job.title.toLowerCase().includes(searchText.toLowerCase())
-      )
-      const companySearchResults = body.data.filter((job) =>
-        job.company_name.toLowerCase().includes(searchText.toLowerCase())
+      const titleSearchResults = body.data.filter(
+        (job) =>
+          job.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          job.company_name.toLowerCase().includes(searchText.toLowerCase())
       )
 
-      setJobs(searchFunc(titleSearchResults, companySearchResults))
+      // const companySearchResults = body.data.filter((job) =>
+      //   job.company_name.toLowerCase().includes(searchText.toLowerCase())
+      // )
+
+      setJobs(titleSearchResults)
     }
   }
 
