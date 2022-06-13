@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import SingleJob from './SingleJob'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const FullJob = () => {
   const [jobs, setJobs] = useState([])
 
-  const search = useLocation().search
-  const company = new URLSearchParams(search).get('company')
+  const params = useParams()
+  const company_name = params.company
 
-  const fetchJobs = async () => {
+  const fetchJobs = async (company_name) => {
     const response = await fetch(
-      `https://strive-jobs-api.herokuapp.com/jobs?company=${company}`
+      `https://strive-jobs-api.herokuapp.com/jobs?company=${company_name}`
     )
     if (response.ok) {
       const body = await response.json()
@@ -20,9 +20,9 @@ const FullJob = () => {
   }
 
   useEffect(() => {
-    fetchJobs()
+    fetchJobs(company_name)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [company_name])
 
   return jobs.map((job) => <SingleJob job={job} key={job._id} />)
 }

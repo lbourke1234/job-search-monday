@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar'
 import { useState, useEffect } from 'react'
 import JobsList from './components/JobsList'
 import FullJob from './components/FullJob'
+import SelectCategory from './components/SelectCategory'
 
 const App = () => {
   const [searchText, setSearchText] = useState('')
@@ -34,6 +35,7 @@ const App = () => {
             <h1 className="text-center">Job Search</h1>
           </Col>
           <SearchBar setSearchText={setSearchText} />
+          <SelectCategory />
         </Row>
         <Row></Row>
         <hr />
